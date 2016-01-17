@@ -1,3 +1,4 @@
+/// <reference path="../../../../node_modules/rx/ts/rx.d.ts" />
 
 import {Injectable, bind} from "angular2/core";
 import * as Rx from "rx";
@@ -33,11 +34,11 @@ export class MessagesService {
       .scan(initialMessages, (messages: Message[],
               operation: IMessagesOperation) => {
         return operation(messages);
-      })
+      });
       // make sure we can share the most recent list of messages across anyone
       // who's interested in subscribing and cache the last known list of
       // messages
-      .shareReplay(1);
+     // .shareReplay(1);
 
     // `create` takes a Message and then puts an operation (the inner function)
     // on the `updates` stream to add the Message to the list of messages.

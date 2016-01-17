@@ -1,3 +1,5 @@
+/// <reference path="../../../../node_modules/rx/ts/rx.d.ts" />
+/// <reference path="../../../../typings/underscore/underscore.d.ts" />
 
 import {Injectable, bind} from "angular2/core";
 import * as Rx from "rx";
@@ -15,8 +17,7 @@ export class ThreadsService {
   orderedThreads: Rx.Observable<Thread[]>;
 
   // `currentThread` contains the currently selected thread
-  currentThread: Rx.Subject<Thread> =
-    new Rx.BehaviorSubject<Thread>(new Thread());
+  currentThread: Rx.Subject<Thread> = new Rx.Subject<Thread>(new Thread());// new Rx.BehaviorSubject<Thread>(new Thread());
 
   // `currentThreadMessages` contains the set of messages for the currently
   // selected thread
@@ -40,17 +41,17 @@ export class ThreadsService {
           }
         });
         return threads;
-      })
+      });
       // share this stream across multiple subscribers and makes sure everyone
       // receives the current list of threads when they first subscribe
-      .shareReplay(1);
+     // .shareReplay(1);
 
     this.orderedThreads = this.threads
       .map((threadGroups: { [key: string]: Thread }) => {
         let threads: Thread[] = _.values(threadGroups);
         return _.sortBy(threads, (t: Thread) => t.lastMessage.sentAt).reverse();
-      })
-      .shareReplay(1);
+      });
+    //  .shareReplay(1);
 
     this.currentThreadMessages = this.currentThread
       .combineLatest(messagesService.messages,
@@ -66,8 +67,8 @@ export class ThreadsService {
         } else {
           return [];
         }
-      })
-      .shareReplay(1);
+      });
+     // .shareReplay(1);
 
     this.currentThread.subscribe(this.messagesService.markThreadAsRead);
 

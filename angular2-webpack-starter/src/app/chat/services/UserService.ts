@@ -1,3 +1,4 @@
+/// <reference path="../../../../node_modules/rx/ts/rx.d.ts" />
 
 import {Injectable, bind} from "angular2/core";
 import * as Rx from "rx";
@@ -9,7 +10,7 @@ import {User} from "../models";
 @Injectable()
 export class UserService {
   // `currentUser` contains the current user
-  currentUser: Rx.Subject<User> = new Rx.BehaviorSubject<User>(null);
+  currentUser: Rx.Subject<User> = new Rx.Subject<User>(null); //Rx.BehaviorSubject<User>(null);
 
   public setCurrentUser(newUser: User): void {
     this.currentUser.onNext(newUser);

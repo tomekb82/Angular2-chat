@@ -1,3 +1,4 @@
+/// <reference path="../../../../typings/underscore/underscore.d.ts" />
 
 import {MessagesService,ThreadsService} from "../../../../src/app/chat/services/services";
 import {Message, User, Thread} from "../../../../src/app/chat/models";
