@@ -5,7 +5,7 @@ import {MessagesService, ThreadsService,
 import * as moment from 'moment';
 
 // the person using the app us Juliet
-let me: User      = new User('Juliet', require('images/avatars/female-avatar-1.png'));
+let me: User      = new User('Tomek', require('images/avatars/me.png'));
 let ladycap: User = new User('Lady Capulet', require('images/avatars/female-avatar-2.png'));
 let echo: User    = new User('Echo Bot', require('images/avatars/male-avatar-1.png'));
 let rev: User     = new User('Reverse Bot', require('images/avatars/female-avatar-4.png'));
@@ -50,22 +50,25 @@ let initialMessages: Array<Message> = [
 ];
 
 export class ChatExampleData {
+
+  static i=0;
   static init(messagesService: MessagesService,
               threadsService: ThreadsService,
               userService: UserService): void {
 
-    // TODO make `messages` hot
-    messagesService.messages.subscribe(() => ({}));
+   // TODO make `messages` hot
+      messagesService.messages.subscribe(() => ({}));
 
-    // set "Juliet" as the current user
-    userService.setCurrentUser(me);
+      // set "Juliet" as the current user
+      userService.setCurrentUser(me);
 
-    // create the initial messages
-    initialMessages.map( (message: Message) => messagesService.addMessage(message) );
+      // create the initial messages
+      initialMessages.map((message:Message) => messagesService.addMessage(message));
 
-    threadsService.setCurrentThread(tEcho);
+      threadsService.setCurrentThread(tEcho);
 
-    this.setupBots(messagesService);
+      this.setupBots(messagesService);
+
   }
 
   static setupBots(messagesService: MessagesService): void {
@@ -77,7 +80,7 @@ export class ChatExampleData {
           new Message({
             author: echo,
             text: message.text,
-            thread: tEcho
+              thread: tEcho
           })
         );
       },

@@ -59,6 +59,8 @@ class ChatApp {
   constructor(public messagesService: MessagesService,
               public threadsService: ThreadsService,
               public userService: UserService) {
+
+
     ChatExampleData.init(messagesService, threadsService, userService);
   }
 }

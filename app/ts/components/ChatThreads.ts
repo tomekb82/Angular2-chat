@@ -2,10 +2,13 @@ import {
   Component,
   OnInit,
   ChangeDetectionStrategy
+
 } from 'angular2/core';
-import {ThreadsService} from '../services/services';
+import {FORM_DIRECTIVES, FormBuilder, ControlGroup, Control, AbstractControl} from 'angular2/common';
+import {UserService, ThreadsService, MessagesService} from '../services/services';
 import {Observable} from 'rxjs';
-import {Thread} from '../models';
+import {User, Thread, Message} from '../models';
+import * as moment from 'moment';
 
 @Component({
   inputs: ['thread'],
@@ -51,7 +54,7 @@ class ChatThread implements OnInit {
 
 @Component({
   selector: 'chat-threads',
-  directives: [ChatThread],
+  directives: [ChatThread, FORM_DIRECTIVES],
   changeDetection: ChangeDetectionStrategy.OnPushObserve,
   template: `
     <!-- conversations -->
@@ -62,15 +65,54 @@ class ChatThread implements OnInit {
              *ngFor="#thread of threads | async"
              [thread]="thread">
         </chat-thread>
-
       </div>
+    </div>
+
+    <div class="row">
+    <div class="conversation-wrap">
+     <h2>Add a new thread</h2>
+        <form [ngFormModel]="myForm" (submit)="onSubmit($event, myForm.value)">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text"
+               class="form-control"
+               id="name"
+               placeholder="Username"
+               ngControl="name">
+          </div>
+          <button type="submit" class="btn btn-default">Add thread</button>
+        </form>
+        </div>
     </div>
   `
 })
 export class ChatThreads {
+  myForm: ControlGroup;
+  name: AbstractControl;
+
   threads: Observable<any>;
 
-  constructor(public threadsService: ThreadsService) {
+  constructor(public threadsService: ThreadsService, public messagesService:MessagesService, fb: FormBuilder) {
     this.threads = threadsService.orderedThreads;
+
+    this.myForm = fb.group({
+      "name": [""]
+    });
+    this.name = this.myForm.controls['name'];
+  }
+
+  onSubmit(event, value) {
+    event.preventDefault();
+    let newUser: User      = new User(value.name, require('images/avatars/male-avatar-3.png'));
+    let newThread: Thread = new Thread('t' + newUser.name , newUser.name, newUser.avatarSrc);
+
+    let newMessage:Message = new Message({
+      author: newUser,
+      sentAt: moment().subtract(0, 'minutes').toDate(),
+      text: `Hello`,
+      thread: newThread
+    });
+
+    this.messagesService.addMessage(newMessage)
   }
 }

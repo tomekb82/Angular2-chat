@@ -86,6 +86,9 @@ export class MessagesService {
 
   // an imperative function call to this action stream
   addMessage(message: Message): void {
+
+    console.log(message);
+
     this.newMessages.next(message);
   }
 

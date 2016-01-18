@@ -6,21 +6,30 @@ import * as _ from 'underscore';
 @Component({
   selector: 'nav-bar',
   template: `
-  <nav class="navbar navbar-default">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="https://ng-book.com/2">
-          <img src="${require('images/logos/ng-book-2-minibook.png')}"/>
-           ng-book 2
-        </a>
+
+  <nav class="navbar navbar-default" style="padding-top: 10px">
+      <div id="badge">
+        <h4>Version</h4>
+        <h3>Development</h3>
       </div>
-      <p class="navbar-text navbar-right">
-        <button class="btn btn-primary" type="button">
-          Messages <span class="badge">{{unreadMessagesCount}}</span>
-        </button>
-      </p>
-    </div>
+      <div class="container-fluid">
+          <div class="navbar-header">
+             <a class="navbar-brand" href="#"><img id="logo" src="${require('images/logos/chat.png')}" />Chat App</a>
+          </div>
+          <ul class="nav navbar-nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#">New user</a></li>
+              <li><a href="#">Page 2</a></li>
+              <li><a href="#">Page 3</a></li>
+          </ul>
+          <p class="navbar-text navbar-right">
+            <button class="btn btn-primary" type="button">
+              Messages <span class="badge">{{unreadMessagesCount}}</span>
+            </button>
+          </p>
+      </div>
   </nav>
+
   `
 })
 export class ChatNavBar implements OnInit {
