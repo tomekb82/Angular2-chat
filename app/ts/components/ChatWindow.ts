@@ -67,7 +67,8 @@ export class ChatMessage implements OnInit {
                FORM_DIRECTIVES],
   changeDetection: ChangeDetectionStrategy.OnPushObserve,
   template: `
-    <div class="chat-window-container">
+    <div [hidden]="hideDiv()" class="chat-window-container">
+      
       <div class="chat-window">
         <div class="panel-container">
           <div class="panel panel-default">
@@ -77,7 +78,9 @@ export class ChatMessage implements OnInit {
                 <h3 class="panel-title">
                   <span class="glyphicon glyphicon-comment"></span>
                   Chat - {{currentThread.name}}
+                  <input type="button" value="X" (click)="hide()" class="close_button">
                 </h3>
+
               </div>
               <div class="panel-buttons-container">
                 <!-- you could put minimize or close buttons here -->
@@ -117,6 +120,15 @@ export class ChatWindow implements OnInit {
   currentThread: Thread;
   draftMessage: Message;
   currentUser: User;
+  val:boolean;
+
+hide(): void{
+this.val = true;
+}
+
+  hideDiv(): boolean{
+        return this.val;
+    } 
 
   constructor(public messagesService: MessagesService,
               public threadsService: ThreadsService,
@@ -125,12 +137,15 @@ export class ChatWindow implements OnInit {
   }
 
   ngOnInit(): void {
+    this.val = false;
+
     this.messages = this.threadsService.currentThreadMessages;
 
     this.draftMessage = new Message();
 
     this.threadsService.currentThread.subscribe(
       (thread: Thread) => {
+        this.val = false;
         this.currentThread = thread;
       });
 
