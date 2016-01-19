@@ -23,6 +23,7 @@ export class MessagesService {
 
   // action streams
   create: Subject<Message> = new Subject<Message>();
+  delete: Subject<any> = new Subject<any>();
   markThreadAsRead: Subject<any> = new Subject<any>();
 
   constructor() {
@@ -61,6 +62,23 @@ export class MessagesService {
       })
       .subscribe(this.updates);
 
+    this.delete
+      .map( (thread: Thread) => {
+       return (messages: Message[]) => {
+          return messages.map( (message: Message) => {
+       
+            if (message.thread.id === thread.id) {
+console.log("YYYYYYYYYY");
+              message = null;
+            }else{
+console.log("ZZZZZZZZZZZZZ");
+            return message;
+           }
+          });
+        };
+      })
+      .subscribe(this.updates);
+
     this.newMessages
       .subscribe(this.create);
 
@@ -86,10 +104,11 @@ export class MessagesService {
 
   // an imperative function call to this action stream
   addMessage(message: Message): void {
-
-    console.log(message);
-
     this.newMessages.next(message);
+  }
+
+  deleteMessage(message: Message): void {
+    this.delete.next(message);
   }
 
   messagesForThreadUser(thread: Thread, user: User): Observable<Message> {

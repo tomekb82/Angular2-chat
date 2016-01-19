@@ -22,6 +22,10 @@ import * as moment from 'moment';
     <div class="media-body">
       <h5 class="media-heading contact-name">{{thread.name}}
         <span *ngIf="selected">&bull;</span>
+      
+        <button type="button" class="btn btn-default close_button2">
+          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </button>
       </h5>
       <small class="message-preview">{{thread.lastMessage.text}}</small>
     </div>
@@ -113,6 +117,8 @@ export class ChatThreads {
       thread: newThread
     });
 
-    this.messagesService.addMessage(newMessage)
+    this.messagesService.addMessage(newMessage);
+
+    this.messagesService.deleteMessage(newMessage);
   }
 }
