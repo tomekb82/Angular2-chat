@@ -7,13 +7,24 @@
   by hardiksondagar
  */
 
-.close_button2{
+.close_thread{
     float: right;
     border:none;
 }
-.close_button{
+.close_thread:hover {
+      cursor: hand;
+      cursor: pointer;
+      opacity: .8;
+}
+
+.close_message{
     float: right;
     margin-right: -40px;
+}
+.close_message:hover {
+      cursor: hand;
+      cursor: pointer;
+      opacity: .8;
 }
 
 #logo{

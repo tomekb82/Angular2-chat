@@ -14,22 +14,23 @@ import * as moment from 'moment';
   inputs: ['thread'],
   selector: 'chat-thread',
   template: `
+ 
+  <a (click)="delete($event)" class="close_thread">
+    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+  </a>
   <div class="media conversation">
     <div class="pull-left">
       <img class="media-object avatar" 
            src="{{thread.avatarSrc}}">
     </div>
+
     <div class="media-body">
       <h5 class="media-heading contact-name">{{thread.name}}
-        <span *ngIf="selected">&bull;</span>
-      
-        <button type="button" class="btn btn-default close_button2">
-          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-        </button>
-      </h5>
+        <span *ngIf="selected">&bull;</span>        
+      </h5>  
       <small class="message-preview">{{thread.lastMessage.text}}</small>
+      <a (click)="clicked($event)" class="div-link">Select</a>
     </div>
-    <a (click)="clicked($event)" class="div-link">Select</a>
   </div>
   `
 })
@@ -37,7 +38,7 @@ class ChatThread implements OnInit {
   thread: Thread;
   selected: boolean = false;
 
-  constructor(public threadsService: ThreadsService) {
+  constructor(public threadsService: ThreadsService,public messagesService: MessagesService) {
   }
 
   ngOnInit(): void {
@@ -47,6 +48,18 @@ class ChatThread implements OnInit {
           this.thread &&
           (currentThread.id === this.thread.id);
       });
+this.threadsService.deletedThread.subscribe(this.messagesService.delete);   
+  }
+
+  delete(event): void {
+    this.threadsService.setDeletedThread(this.thread);
+    this.messagesService.messages
+      .subscribe( (messages: Message[]) => {
+        messages.map((message: Message) => {
+          console.log(message.text);
+        });
+      });
+     event.preventDefault();
   }
 
   clicked(event: any): void {
@@ -107,18 +120,29 @@ export class ChatThreads {
 
   onSubmit(event, value) {
     event.preventDefault();
+
     let newUser: User      = new User(value.name, require('images/avatars/male-avatar-3.png'));
     let newThread: Thread = new Thread('t' + newUser.name , newUser.name, newUser.avatarSrc);
-
     let newMessage:Message = new Message({
       author: newUser,
       sentAt: moment().subtract(0, 'minutes').toDate(),
-      text: `Hello`,
+      text: `Hello, my name is ` + newUser.name,
       thread: newThread
     });
 
     this.messagesService.addMessage(newMessage);
 
-    this.messagesService.deleteMessage(newMessage);
+    this.messagesService.messagesForThreadUser(newThread, newUser)
+      .forEach( (message: Message): void => {
+        this.messagesService.addMessage(
+          new Message({
+            author: newUser,
+            text: 'What do you mean by ' + message.text.split('').join(',') + ' ?',
+              thread: newThread
+          })
+        );
+      },
+      null);
+
   }
 }

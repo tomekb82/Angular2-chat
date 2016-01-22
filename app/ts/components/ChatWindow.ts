@@ -78,7 +78,9 @@ export class ChatMessage implements OnInit {
                 <h3 class="panel-title">
                   <span class="glyphicon glyphicon-comment"></span>
                   Chat - {{currentThread.name}}
-                  <input type="button" value="X" (click)="hide()" class="close_button">
+                  <a (click)="hide()" class="close_message">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                  </a>
                 </h3>
 
               </div>

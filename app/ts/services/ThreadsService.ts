@@ -17,20 +17,23 @@ export class ThreadsService {
   currentThread: Subject<Thread> =
     new BehaviorSubject<Thread>(new Thread());
 
+  // `deletedThread` contains the deleted thread
+  deletedThread: Subject<Thread> = 
+    new BehaviorSubject<Thread>(new Thread());
+
   // `currentThreadMessages` contains the set of messages for the currently
   // selected thread
   currentThreadMessages: Observable<Message[]>;
 
   constructor(public messagesService: MessagesService) {
 
-    this.threads = messagesService.messages
-      .map( (messages: Message[]) => {
+  this.threads = messagesService.messages.map( (messages: Message[]) => {
         let threads: {[key: string]: Thread} = {};
         // Store the message's thread in our accumulator `threads`
         messages.map((message: Message) => {
+
           threads[message.thread.id] = threads[message.thread.id] ||
             message.thread;
-
           // Cache the most recent message for each thread
           let messagesThread: Thread = threads[message.thread.id];
           if (!messagesThread.lastMessage ||
@@ -44,6 +47,7 @@ export class ThreadsService {
     this.orderedThreads = this.threads
       .map((threadGroups: { [key: string]: Thread }) => {
         let threads: Thread[] = _.values(threadGroups);
+        return threads;
         return _.sortBy(threads, (t: Thread) => t.lastMessage.sentAt).reverse();
       });
 
@@ -68,6 +72,10 @@ export class ThreadsService {
 
   setCurrentThread(newThread: Thread): void {
     this.currentThread.next(newThread);
+  }
+
+  setDeletedThread(newThread: Thread): void {
+    this.deletedThread.next(newThread);
   }
 
 }

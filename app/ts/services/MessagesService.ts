@@ -63,21 +63,14 @@ export class MessagesService {
       .subscribe(this.updates);
 
     this.delete
-      .map( (thread: Thread) => {
-       return (messages: Message[]) => {
-          return messages.map( (message: Message) => {
-       
-            if (message.thread.id === thread.id) {
-console.log("YYYYYYYYYY");
-              message = null;
-            }else{
-console.log("ZZZZZZZZZZZZZ");
-            return message;
-           }
-          });
-        };
-      })
-      .subscribe(this.updates);
+        .map( (thread: Thread) => {
+            return (messages: Message[]) => {
+              return messages.filter((message: Message) => {
+                 return (message.thread.id !== thread.id);
+	      });
+	    };
+        })
+        .subscribe(this.updates);
 
     this.newMessages
       .subscribe(this.create);
@@ -105,10 +98,6 @@ console.log("ZZZZZZZZZZZZZ");
   // an imperative function call to this action stream
   addMessage(message: Message): void {
     this.newMessages.next(message);
-  }
-
-  deleteMessage(message: Message): void {
-    this.delete.next(message);
   }
 
   messagesForThreadUser(thread: Thread, user: User): Observable<Message> {
